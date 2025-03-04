@@ -1,53 +1,43 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useTask } from "../context/TaskContext";
 
 const AddTask = () => {
   const { projectId } = useParams(); // Get project ID from URL
-  const navigate = useNavigate();
   const [taskName, setTaskName] = useState("");
   const [description, setDescription] = useState("");
   const [deadline, setDeadline] = useState("");
-  const [members, setMembers] = useState([]);
-  const [assignedMember, setAssignedMember] = useState("");
+  const [selectedMember, setSelectedMember] = useState("");
   const [success, setSuccess] = useState(false);
 
-  useEffect(() => {
-    // Dummy members list (this should come from a database in a real app)
-    setMembers([
-      { id: 1, name: "Alice" },
-      { id: 2, name: "Bob" },
-    ]);
-  }, []);
+  const {members, createTask} = useTask();
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!taskName || !description || !assignedMember || !deadline) {
+    if (!projectId || !taskName || !selectedMember || !deadline) {
       alert("Please fill all fields!");
       return;
     }
 
     const newTask = {
-      id: Date.now(),
-      projectId: Number(projectId), // ✅ Associate task with project
-      name: taskName,
+      title: taskName,
       description,
-      assignedTo: assignedMember,
-      deadline,
-      status: "Pending",
+      projectId,
+      assignedTo: selectedMember,
+      deadline: new Date(deadline).toISOString()
     };
 
-    // ✅ Store in localStorage
-    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-    tasks.push(newTask);
-    localStorage.setItem("tasks", JSON.stringify(tasks));
-
-    setSuccess(true);
-    setTimeout(() => {
-      setSuccess(false);
-      navigate(`/tasks/${projectId}`); // ✅ Redirect to View Tasks page
-    }, 1000);
-  };
+    const success = await createTask(newTask);
+    if(success){
+      setSuccess(true);
+      setTimeout(() => {
+        setSuccess(false);
+        navigate('/projects');
+      }, 1000);
+    }
+  }
 
   return (
     <div className="p-6 max-w-lg mx-auto bg-white rounded shadow">
@@ -71,7 +61,6 @@ const AddTask = () => {
             className="w-full p-2 border rounded"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            required
           ></textarea>
         </div>
 
@@ -79,13 +68,13 @@ const AddTask = () => {
           <label className="block text-gray-700">Assign to Member</label>
           <select
             className="w-full p-2 border rounded"
-            value={assignedMember}
-            onChange={(e) => setAssignedMember(e.target.value)}
+            value={selectedMember}
+            onChange={(e) => setSelectedMember(e.target.value)}
             required
           >
             <option value="">Select Member</option>
             {members.map((member) => (
-              <option key={member.id} value={member.name}>{member.name}</option>
+              <option key={member._id} value={member._id}>{member.name}</option>
             ))}
           </select>
         </div>

@@ -21,7 +21,7 @@ const Sidebar = () => {
         )}
 
         {user?.role === "Team Member" && (
-          <Link to="/tasks" className="hover:text-blue-400">My Tasks</Link>
+          <Link to="/my-tasks" className="hover:text-blue-400">My Tasks</Link>
         )}
       </nav>
 

@@ -50,6 +50,21 @@ const getTasks = async (req, res) => {
     }
 }
 
+const getAllTasks = async (req, res) => {
+    try{
+        if(req.user.role==="Team Member"){
+            return res.status(401).json({message: "Access Denied. Only accessible to Managers and Project Leaders"});
+        }
+
+        const tasks = await Task.find().populate("projectId");
+
+        res.status(201).json(tasks);
+    }
+    catch(err){
+        res.status(500).json({ message: "Server Error", err });
+    }
+}
+
 const getProjectName = async (req, res) => {
     try{
         const projectId = req.query.projectId;
@@ -83,4 +98,4 @@ const getTeamMembers = async (req, res) => {
     }
 }
 
-module.exports = {createTask, getTasks, getTeamMembers, getProjectName};
+module.exports = {createTask, getTasks, getAllTasks, getTeamMembers, getProjectName};

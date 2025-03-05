@@ -7,6 +7,7 @@ export const TaskProvider = ({children}) => {
     const [loadingMembers, setLoadingMembers] = useState(true); // loading update
     const [tasks, setTasks] = useState([]);
     const [projectName, setProjectName] = useState("");
+    const [tasksByProject, setTasksByProject] = useState({});
     const taskAPI = "http://localhost:5001/tasks";
 
     //Fetch team members from backend
@@ -82,6 +83,34 @@ export const TaskProvider = ({children}) => {
         }
     }
 
+    const fetchTasksByProject = async (projectId) => {
+        try{
+            const response = await fetch(`${taskAPI}/allTasks`, {
+                method: "GET",
+                credentials: "include" 
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to fetch tasks");
+            }
+
+            const data = await response.json();
+
+            const groupedTasks = data.reduce((acc, task) => {
+                if (!acc[task.projectId]) {
+                    acc[task.projectId] = [];
+                }
+                acc[task.projectId].push(task);
+                return acc;
+            }, {});
+
+            setTasksByProject(groupedTasks);
+        }
+        catch (error) {
+            console.error("Error fetching tasks by project:", error.message);
+        }
+    }
+
     const createTask = async (taskData) => {
         try{
             const response = await fetch(`${taskAPI}/createTask`,{
@@ -142,7 +171,7 @@ export const TaskProvider = ({children}) => {
     }, []);
 
     return( // loading update
-        <TaskContext.Provider value={{members, loadingMembers, tasks, projectName, fetchTasks, createTask, fetchProjectName, updateTask}}>
+        <TaskContext.Provider value={{members, loadingMembers, tasks, tasksByProject, projectName, fetchTasks, fetchTasksByProject, createTask, fetchProjectName, updateTask}}>
             {children}
         </TaskContext.Provider>
     );

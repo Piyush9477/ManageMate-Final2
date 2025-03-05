@@ -28,6 +28,8 @@ const Sidebar = () => {
         {user?.role === "Team Member" && (
           <Link to="/my-tasks" className="hover:text-blue-400">My Tasks</Link>
         )}
+
+        <Link to="/chat" className="hover:text-green-400 font-bold">💬 Chat</Link>
       </nav>
 
       <button

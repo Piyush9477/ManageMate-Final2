@@ -7,14 +7,36 @@ export const AuthProvider = ({children}) => {
   const authAPI = "http://localhost:5001/auth";
 
   const [user, setUser] = useState(null);
+  const [users, setUsers] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
     if(storedUser){
       setUser(storedUser);
+      fetchUsers();
     }
   }, []);
+
+  const fetchUsers = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch("http://localhost:5001/auth/users", {
+        method: "GET",
+        credentials: "include",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch users: ${response.status} ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      setUsers(data);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
 
   const login = async (email, password) => {
     try{
@@ -41,6 +63,7 @@ export const AuthProvider = ({children}) => {
 
       localStorage.setItem("user", JSON.stringify(userData));
       setUser(userData);
+      fetchUsers();
 
       navigate("/dashboard");
 
@@ -86,6 +109,7 @@ export const AuthProvider = ({children}) => {
 
       localStorage.removeItem("user");
       setUser(null);
+      setUsers([]);
       navigate("/");
     } catch (error) {
       console.error("Logout error:", error.message);
@@ -93,7 +117,7 @@ export const AuthProvider = ({children}) => {
   }
 
   return(
-    <AuthContext.Provider value={{user, register, login, logout}}>
+    <AuthContext.Provider value={{user, users, register, login, logout}}>
       {children}
     </AuthContext.Provider>
   );

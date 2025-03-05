@@ -37,9 +37,15 @@ const ProjectList = () => {
         >
           <h2 className="text-xl font-semibold">{project.name}</h2>
           <p className="text-gray-300">{project.description}</p>
-          <p className="text-sm mt-2">
-            <strong>Assigned to:</strong> {project.projectLeader?.name}
-          </p>
+          {user?.role === "Project Leader" ? (
+            <p className="text-sm mt-2">
+              <strong>Assigned by:</strong> {project.managerId?.name}
+            </p>
+          ) : user?.role === "Manager" ? (
+            <p className="text-sm mt-2">
+              <strong>Assigned to:</strong> {project.projectLeader?.name}
+            </p>
+          ) : null}
           <p className="text-sm">
             <strong>Deadline:</strong> {new Date(project.deadline).toLocaleDateString()}
           </p>

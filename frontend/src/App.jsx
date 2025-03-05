@@ -12,7 +12,9 @@ import TaskList from "./pages/TaskList";
 import EditTask from "./pages/EditTask";
 import MyTasks from "./pages/MyTasks";
 import UpdateTask from "./pages/UpdateTask";
+import ViewTasks from "./pages/ViewTasks";
 import { useAuth } from "./context/AuthContext"; // Import useAuth to get user role
+import Chat from "./components/Chat";
 
 function App() {
   const { user } = useAuth(); // Get logged-in user details
@@ -73,16 +75,14 @@ function App() {
         <Route path="/projects" element={user?.role ? <ProjectList projects={projects} /> : <Navigate to="/" />} />
         <Route path="/add-project" element={user?.role === "Manager" ? <AddProject addProject={addProject} /> : <Navigate to="/dashboard" />} />
         {/* <Route path="/edit-project/:id" element={user?.role === "Manager" ? <EditProject projects={projects} updateProject={updateProject} /> : <Navigate to="/dashboard" />} /> */}
-        <Route 
-  path="/edit-project/:id" 
-  element={user?.role === "Manager" ? <EditProject /> : <Navigate to="/dashboard" />} 
-/>
-
+        <Route path="/edit-project/:id" element={user?.role === "Manager" ? <EditProject /> : <Navigate to="/dashboard" />} />
         <Route path="/add-task/:projectId" element={user?.role === "Project Leader" ? <AddTask addTask={addTask} /> : <Navigate to="/dashboard" />} />
         <Route path="/tasks/:projectId" element={user?.role ? <TaskList deleteTask={deleteTask} /> : <Navigate to="/" />} />
+        <Route path="/view-tasks" element={<ViewTasks />} />
         <Route path="/my-tasks" element = {< MyTasks />}/>
         <Route path="update-task/:taskId" element= {<UpdateTask />}/>
         <Route path="/edit-task/:taskId" element={user?.role === "Project Leader" || user?.role === "Team Member" ? <EditTask tasks={tasks} updateTask={updateTask} /> : <Navigate to="/dashboard" />} />
+        <Route path="/chat" element={<Chat />} />
       </Route>
     </Routes>
   );

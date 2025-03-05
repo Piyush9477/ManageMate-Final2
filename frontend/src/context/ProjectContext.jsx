@@ -3,10 +3,30 @@ import { createContext, useContext, useState, useEffect } from "react";
 const ProjectContext = createContext();
 
 export const ProjectProvider = ({children}) => {
+    const [user, setUser] = useState(null); // ✅ Store logged-in user
     const [leaders, setLeaders] = useState([]);
     const [loadingLeaders, setLoadingLeaders] = useState(true); // loading update
     const [projects, setProjects] = useState([]);
     const projectAPI = "http://localhost:5001/project";
+
+    // ✅ Fetch authenticated user
+    const fetchUser = async () => {
+        try {
+            const response = await fetch("http://localhost:5001/auth/me", {
+                method: "GET",
+                credentials: "include",
+                headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+            });
+
+            if (!response.ok) throw new Error("Failed to fetch user");
+
+            const userData = await response.json();
+            console.log("✅ Authenticated user:", userData);
+            setUser(userData); // ✅ Store user
+        } catch (error) {
+            console.error("❌ Error fetching user:", error);
+        }
+    };
 
     // Fetch project leaders from backend
     const fetchLeaders = async () => {
@@ -77,9 +97,6 @@ export const ProjectProvider = ({children}) => {
         }
     };
     
-    
-    
-
     //edit project
     const updateProject = async (updatedProject) => {
         try {
@@ -105,12 +122,14 @@ export const ProjectProvider = ({children}) => {
       };
 
     useEffect(() =>{
-        fetchLeaders();
-        fetchProjects();
+        fetchUser().then(() => {
+            fetchLeaders();
+            fetchProjects();
+        });
     }, []);
 
     return( // loading update
-        <ProjectContext.Provider value={{leaders, loadingLeaders, projects, fetchProjects, createProject, updateProject}}> 
+        <ProjectContext.Provider value={{user, setUser, leaders, loadingLeaders, projects, fetchProjects, createProject, updateProject}}> 
             {children}
         </ProjectContext.Provider>
     );

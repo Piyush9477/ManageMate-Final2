@@ -6,13 +6,12 @@ const multer = require("multer");
 
 const router = express.Router();
 
-// ✅ Ensure "uploads/" directory exists
 const uploadDir = "uploads";
 if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir);
 }
 
-// ✅ Configure Multer for file uploads
+// Configure Multer for file uploads
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, uploadDir);
@@ -23,7 +22,6 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// ✅ Fix: Ensure `authMiddleware` runs before `upload.single("file")`
 router.post("/createProject", authMiddleware, upload.single("file"), createProject);
 router.get("/", authMiddleware, getProjects);
 router.get("/leaders", authMiddleware, getProjectLeaders);

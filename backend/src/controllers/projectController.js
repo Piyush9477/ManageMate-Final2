@@ -27,7 +27,6 @@ const createProject = async (req, res) => {
     }
 };
 
-// ✅ Re-add getProjects function
 const getProjects = async (req, res) => {
     try {
         let projects;
@@ -38,7 +37,7 @@ const getProjects = async (req, res) => {
                 .select("name description projectLeader deadline file status"); // ✅ Include "file"
         } else if (req.user.role === "Project Leader") {
             projects = await Project.find({ projectLeader: req.user.id })
-                .populate("projectLeader", "name _id")
+                .populate("managerId projectLeader", "name _id")
                 .select("name description projectLeader deadline file status"); // ✅ Include "file"
         } else {
             return res.status(403).json({ message: "Access Denied" });

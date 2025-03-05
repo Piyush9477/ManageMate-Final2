@@ -10,7 +10,7 @@ const AddTask = () => {
   const [selectedMember, setSelectedMember] = useState("");
   const [success, setSuccess] = useState(false);
 
-  const {members, createTask} = useTask();
+  const {members, loadingMembers, createTask} = useTask(); // loading update
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -66,7 +66,7 @@ const AddTask = () => {
 
         <div className="mb-4">
           <label className="block text-gray-700">Assign to Member</label>
-          <select
+          {/* <select
             className="w-full p-2 border rounded"
             value={selectedMember}
             onChange={(e) => setSelectedMember(e.target.value)}
@@ -76,7 +76,17 @@ const AddTask = () => {
             {members.map((member) => (
               <option key={member._id} value={member._id}>{member.name}</option>
             ))}
-          </select>
+          </select> */}
+          {loadingMembers ? (  //loading update
+            <p>Loading memebers...</p>
+          ) : (
+            <select className="w-full p-2 border rounded" value={selectedMember} onChange={(e) => setSelectedMember(e.target.value)} required>
+              <option value="">Select Member</option>
+              {members.map((member) => (
+                <option key={member._id} value={member._id}>{member.name}</option>
+              ))}
+            </select>
+          )}
         </div>
 
         <div className="mb-4">

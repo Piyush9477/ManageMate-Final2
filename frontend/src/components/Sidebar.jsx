@@ -10,7 +10,6 @@ const Sidebar = () => {
 
       <nav className="flex flex-col space-y-4">
         <Link to="/dashboard" className="hover:text-blue-400">Dashboard</Link>
-        {/* <Link to="/projects" className="hover:text-blue-400">Projects</Link> */}
 
         {user?.role === "Manager" && (
           <>
@@ -22,7 +21,7 @@ const Sidebar = () => {
         {user?.role === "Project Leader" && (
           <>
           <Link to="/projects" className="hover:text-blue-400">Projects</Link>
-          <Link to="/tasks" className="hover:text-blue-400">Manage Tasks</Link>
+          <Link to="/view-tasks" className="hover:text-blue-400">Tasks List</Link>
           </>
         )}
 

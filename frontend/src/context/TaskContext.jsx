@@ -4,12 +4,14 @@ const TaskContext = createContext();
 
 export const TaskProvider = ({children}) => {
     const [members, setMembers] = useState([]);
+    const [loadingMembers, setLoadingMembers] = useState(true); // loading update
     const [tasks, setTasks] = useState([]);
     const [projectName, setProjectName] = useState("");
     const taskAPI = "http://localhost:5001/tasks";
 
     //Fetch team members from backend
     const fetchMembers = async () => {
+        setLoadingMembers(true); // loading update
         try{
             const response = await fetch(`${taskAPI}/members`, {
                 method: "GET",
@@ -25,6 +27,9 @@ export const TaskProvider = ({children}) => {
         }
         catch (error) {
             console.error("Error fetching members:", error.message);
+        }
+        finally{
+            setLoadingMembers(false); // loading update
         }
     }
 
@@ -136,8 +141,8 @@ export const TaskProvider = ({children}) => {
         fetchTasks();
     }, []);
 
-    return(
-        <TaskContext.Provider value={{members, tasks, projectName, fetchTasks, createTask, fetchProjectName, updateTask}}>
+    return( // loading update
+        <TaskContext.Provider value={{members, loadingMembers, tasks, projectName, fetchTasks, createTask, fetchProjectName, updateTask}}>
             {children}
         </TaskContext.Provider>
     );

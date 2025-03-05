@@ -7,10 +7,10 @@ const AddProject = () => {
   const [description, setDescription] = useState("");
   const [deadline, setDeadline] = useState("");
   const [selectedLeader, setSelectedLeader] = useState("");
-  const [file, setFile] = useState(null); // ✅ Added file state
+  const [file, setFile] = useState(null); 
   const [success, setSuccess] = useState(false);
 
-  const { leaders, createProject } = useProject();
+  const { leaders, createProject, loadingLeaders } = useProject(); // loading update
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -55,12 +55,22 @@ const AddProject = () => {
 
         <div className="mb-4">
           <label className="block text-gray-700">Assign to Project Leader</label>
-          <select className="w-full p-2 border rounded" value={selectedLeader} onChange={(e) => setSelectedLeader(e.target.value)} required>
+          {/* <select className="w-full p-2 border rounded" value={selectedLeader} onChange={(e) => setSelectedLeader(e.target.value)} required>
             <option value="">Select Leader</option>
             {leaders.map((leader) => (
               <option key={leader._id} value={leader._id}>{leader.name}</option>
             ))}
-          </select>
+          </select> */}
+          {loadingLeaders ? ( // loding update
+            <p>Loading leaders...</p>
+          ) : (
+            <select className="w-full p-2 border rounded" value={selectedLeader} onChange={(e) => setSelectedLeader(e.target.value)} required>
+              <option value="">Select Leader</option>
+              {leaders.map((leader) => (
+                <option key={leader._id} value={leader._id}>{leader.name}</option>
+              ))}
+            </select>
+          )}
         </div>
 
         <div className="mb-4">

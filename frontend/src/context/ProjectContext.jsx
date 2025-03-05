@@ -4,11 +4,13 @@ const ProjectContext = createContext();
 
 export const ProjectProvider = ({children}) => {
     const [leaders, setLeaders] = useState([]);
+    const [loadingLeaders, setLoadingLeaders] = useState(true); // loading update
     const [projects, setProjects] = useState([]);
     const projectAPI = "http://localhost:5001/project";
 
     // Fetch project leaders from backend
     const fetchLeaders = async () => {
+        setLoadingLeaders(true); //// loading update
         try{
             const response = await fetch(`${projectAPI}/leaders`, {
                 method: "GET",
@@ -24,6 +26,9 @@ export const ProjectProvider = ({children}) => {
         }
         catch (error) {
             console.error("Error fetching leaders:", error.message);
+        }
+        finally{
+            setLoadingLeaders(false); // loading update
         }
     }
 
@@ -104,8 +109,8 @@ export const ProjectProvider = ({children}) => {
         fetchProjects();
     }, []);
 
-    return(
-        <ProjectContext.Provider value={{leaders, projects, fetchProjects, createProject, updateProject}}>
+    return( // loading update
+        <ProjectContext.Provider value={{leaders, loadingLeaders, projects, fetchProjects, createProject, updateProject}}> 
             {children}
         </ProjectContext.Provider>
     );

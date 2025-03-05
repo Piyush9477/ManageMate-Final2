@@ -36,14 +36,15 @@ const TaskList = () => {
               <p className="text-sm mt-2"><strong>Assigned to:</strong> {task.assignedTo?.name || "Unassigned"}</p>
               <p className="text-sm"><strong>Deadline:</strong> {new Date(task.deadline).toLocaleDateString()}</p>
               <p className="text-sm"><strong>Status:</strong> {task.status}</p>
+              <p className="text-sm"><strong>Progress: </strong>{task.progress}</p>
 
               {user.role === "Project Leader" && (
                 <>
-                  <Link to={`/edit-task/${task.id}`} className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-700 mt-2 inline-block">
+                  <Link to={`/edit-task/${task._id}`} className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-700 mt-2 inline-block">
                     Edit Task
                   </Link>
                   <button
-                    onClick={() => deleteTask(task.id)}
+                    onClick={() => deleteTask(task._id)}
                     className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-700 mt-2 inline-block ml-2"
                   >
                     Delete Task

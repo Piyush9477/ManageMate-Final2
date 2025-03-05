@@ -27,6 +27,14 @@ const MyTasks = () => {
                             <p className="text-gray-300">{task.description}</p>
                             <p className="text-sm">Deadline: {new Date(task.deadline).toLocaleDateString()}</p>
                             <p className="text-sm">Status: {task.status}</p>
+                            <p className="text-sm">Progress: {task.progress}</p>
+
+                            <Link
+                                to={`/update-task/${task._id}`}
+                                className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-yellow-700 mt-2 inline-block ml-2"
+                            >
+                                Update Task Progress
+                            </Link>
                         </div>
                     ))}
                 </div>

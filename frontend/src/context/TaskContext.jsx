@@ -102,13 +102,42 @@ export const TaskProvider = ({children}) => {
         }
     }
 
+    const updateTask = async (taskId, progress) => {
+        try{
+            const response = await fetch(`${taskAPI}/updateTask/${taskId}`,{
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+                body: JSON.stringify({progress})
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || "Failed to update task progress");
+            }
+
+            const updatedResponse = await response.json();
+            const updatedTask = updatedResponse.task;
+
+            setTasks((prevTasks) =>
+                prevTasks.map((task) => (task._id === taskId ? updatedTask : task))
+            );
+
+            return true;
+        }
+        catch (error) {
+            console.error("Error updating task progress:", error.message);
+            return false;
+        }
+    }
+
     useEffect(() => {
         fetchMembers();
         fetchTasks();
     }, []);
 
     return(
-        <TaskContext.Provider value={{members, tasks, projectName, fetchTasks, createTask, fetchProjectName}}>
+        <TaskContext.Provider value={{members, tasks, projectName, fetchTasks, createTask, fetchProjectName, updateTask}}>
             {children}
         </TaskContext.Provider>
     );

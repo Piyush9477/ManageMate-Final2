@@ -9,6 +9,13 @@ const createTask = async (req, res) => {
         }
 
         const {title, description, projectId, assignedTo, deadline} = req.body;
+
+        const existingTasks = await Task.findOne({ projectId });
+
+        if (!existingTasks) {
+            await Project.findByIdAndUpdate(projectId, { status: "In Progress" });
+        }
+
         const task = new Task({title, description, projectId, assignedTo, deadline});
 
         await task.save();

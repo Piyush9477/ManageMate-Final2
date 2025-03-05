@@ -10,14 +10,20 @@ const Sidebar = () => {
 
       <nav className="flex flex-col space-y-4">
         <Link to="/dashboard" className="hover:text-blue-400">Dashboard</Link>
-        <Link to="/projects" className="hover:text-blue-400">Projects</Link>
+        {/* <Link to="/projects" className="hover:text-blue-400">Projects</Link> */}
 
         {user?.role === "Manager" && (
+          <>
+          <Link to="/projects" className="hover:text-blue-400">Projects</Link>
           <Link to="/add-project" className="hover:text-blue-400">Add Project</Link>
+          </>
         )}
 
         {user?.role === "Project Leader" && (
+          <>
+          <Link to="/projects" className="hover:text-blue-400">Projects</Link>
           <Link to="/tasks" className="hover:text-blue-400">Manage Tasks</Link>
+          </>
         )}
 
         {user?.role === "Team Member" && (

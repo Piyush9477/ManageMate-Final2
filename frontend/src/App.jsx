@@ -11,6 +11,7 @@ import AddTask from './pages/AddTask';
 import TaskList from "./pages/TaskList";
 import EditTask from "./pages/EditTask";
 import MyTasks from "./pages/MyTasks";
+import UpdateTask from "./pages/UpdateTask";
 import { useAuth } from "./context/AuthContext"; // Import useAuth to get user role
 
 function App() {
@@ -80,6 +81,7 @@ function App() {
         <Route path="/add-task/:projectId" element={user?.role === "Project Leader" ? <AddTask addTask={addTask} /> : <Navigate to="/dashboard" />} />
         <Route path="/tasks/:projectId" element={user?.role ? <TaskList deleteTask={deleteTask} /> : <Navigate to="/" />} />
         <Route path="/my-tasks" element = {< MyTasks />}/>
+        <Route path="update-task/:taskId" element= {<UpdateTask />}/>
         <Route path="/edit-task/:taskId" element={user?.role === "Project Leader" || user?.role === "Team Member" ? <EditTask tasks={tasks} updateTask={updateTask} /> : <Navigate to="/dashboard" />} />
       </Route>
     </Routes>

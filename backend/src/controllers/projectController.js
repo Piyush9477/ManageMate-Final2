@@ -35,11 +35,11 @@ const getProjects = async (req, res) => {
         if (req.user.role === "Manager") {
             projects = await Project.find({ managerId: req.user.id })
                 .populate("projectLeader", "name _id")
-                .select("name description projectLeader deadline file"); // ✅ Include "file"
+                .select("name description projectLeader deadline file status"); // ✅ Include "file"
         } else if (req.user.role === "Project Leader") {
             projects = await Project.find({ projectLeader: req.user.id })
                 .populate("projectLeader", "name _id")
-                .select("name description projectLeader deadline file"); // ✅ Include "file"
+                .select("name description projectLeader deadline file status"); // ✅ Include "file"
         } else {
             return res.status(403).json({ message: "Access Denied" });
         }
@@ -82,5 +82,5 @@ const updateProject = async (req, res) => {
     }
 };
 
-// ✅ Now `getProjects` exists and can be exported
+
 module.exports = { createProject, getProjects, getProjectLeaders, updateProject };

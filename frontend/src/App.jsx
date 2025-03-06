@@ -13,6 +13,7 @@ import EditTask from "./pages/EditTask";
 import MyTasks from "./pages/MyTasks";
 import UpdateTask from "./pages/UpdateTask";
 import ViewTasks from "./pages/ViewTasks";
+import Profile from "./pages/Profile";
 import { useAuth } from "./context/AuthContext"; // Import useAuth to get user role
 import Chat from "./components/Chat";
 
@@ -72,6 +73,7 @@ function App() {
       <Route path="/register" element={<Register />} />
       <Route element={<Layout/>}>
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/profile" element={<Profile />} />
         <Route path="/projects" element={user?.role ? <ProjectList projects={projects} /> : <Navigate to="/" />} />
         <Route path="/add-project" element={user?.role === "Manager" ? <AddProject addProject={addProject} /> : <Navigate to="/dashboard" />} />
         {/* <Route path="/edit-project/:id" element={user?.role === "Manager" ? <EditProject projects={projects} updateProject={updateProject} /> : <Navigate to="/dashboard" />} /> */}

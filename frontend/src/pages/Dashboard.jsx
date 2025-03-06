@@ -1,12 +1,16 @@
 import { useAuth } from "../context/AuthContext";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 
 const Dashboard = () => {
+  const { profile, fetchProfile } = useAuth();
   const { user } = useAuth();
-  const location = useLocation(); 
-  const successMessage = location.state?.message;
-  const [message, setMessage] = useState(location.state?.message);
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // useEffect(() => {
+  //   fetchProfile();  // ✅ Ensure data is fetched when component mounts
+  // }, []);
   
   return (
     <div className="flex h-screen">
@@ -16,6 +20,13 @@ const Dashboard = () => {
             {message}
           </div>
         )} */}
+
+        {/* Profile Section in Top Right */}
+        {/* <div className="absolute top-5 right-8 flex items-center space-x-4">
+          <div className="cursor-pointer bg-white p-2 rounded-full shadow-md hover:bg-gray-200" onClick={() => navigate("/profile")}>
+            <span className="text-gray-900 font-semibold">{profile?.name}</span>
+          </div>
+        </div> */}
 
         <h1 className="text-3xl font-bold mb-4 text-gray-900">
           Welcome, {user?.name} 

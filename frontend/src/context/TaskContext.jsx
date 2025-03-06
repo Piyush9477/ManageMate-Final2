@@ -83,33 +83,50 @@ export const TaskProvider = ({children}) => {
         }
     }
 
-    const fetchTasksByProject = async (projectId) => {
-        try{
+    const fetchTasksByProject = async () => {
+        try {
             const response = await fetch(`${taskAPI}/allTasks`, {
                 method: "GET",
-                credentials: "include" 
+                credentials: "include",
             });
-
+    
             if (!response.ok) {
                 throw new Error("Failed to fetch tasks");
             }
-
+    
             const data = await response.json();
+    
+            // Filter tasks based on the logged-in user's ID
+            const user = JSON.parse(localStorage.getItem("user")); // Parse the string into an object
+            if (!user || !user.id) {
+                console.error("User not found in localStorage");
+                return;
+            }
 
-            const groupedTasks = data.reduce((acc, task) => {
-                if (!acc[task.projectId]) {
-                    acc[task.projectId] = [];
+            const filteredTasks = data.filter(task => task.projectId.projectLeader === user.id);
+
+    
+            // Group tasks by projectId
+            const groupedTasks = filteredTasks.reduce((acc, task) => {
+                const projectId = task.projectId._id;
+    
+                if (!acc[projectId]) {
+                    acc[projectId] = {
+                        projectName: task.projectId.name,
+                        tasks: []
+                    };
                 }
-                acc[task.projectId].push(task);
+    
+                acc[projectId].tasks.push(task);
                 return acc;
             }, {});
-
+    
             setTasksByProject(groupedTasks);
+        } catch (error) {
+            console.error("Error fetching tasks:", error);
         }
-        catch (error) {
-            console.error("Error fetching tasks by project:", error.message);
-        }
-    }
+    };
+    
 
     const createTask = async (taskData) => {
         try{

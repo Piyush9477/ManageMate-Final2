@@ -7,6 +7,7 @@ export const AuthProvider = ({children}) => {
   const authAPI = "http://localhost:5001/auth";
 
   const [user, setUser] = useState(null);
+  const [profile, setProfile] = useState(null);
   const [users, setUsers] = useState([]);
   const navigate = useNavigate();
 
@@ -14,6 +15,7 @@ export const AuthProvider = ({children}) => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
     if(storedUser){
       setUser(storedUser);
+      fetchProfile();
       fetchUsers();
     }
   }, []);
@@ -110,14 +112,37 @@ export const AuthProvider = ({children}) => {
       localStorage.removeItem("user");
       setUser(null);
       setUsers([]);
-      navigate("/");
+      setProfile(null);
+
+      setTimeout(() => {
+        navigate("/");
+      }, 100);
     } catch (error) {
       console.error("Logout error:", error.message);
     }
   }
 
+  const fetchProfile = async () => {
+    try{
+      const response = await fetch(`${authAPI}/profile`,{
+        method: "GET",
+        credentials: "include"
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch profile: ${response.status} ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      setProfile(data);
+    }
+    catch (error) {
+      console.error("Error fetching profile:", error);
+    }
+  }
+
   return(
-    <AuthContext.Provider value={{user, users, register, login, logout}}>
+    <AuthContext.Provider value={{user, profile, setProfile, users, register, login, logout, fetchProfile}}>
       {children}
     </AuthContext.Provider>
   );

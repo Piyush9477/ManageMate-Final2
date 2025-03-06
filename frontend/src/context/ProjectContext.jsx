@@ -21,7 +21,7 @@ export const ProjectProvider = ({children}) => {
             if (!response.ok) throw new Error("Failed to fetch user");
 
             const userData = await response.json();
-            console.log("✅ Authenticated user:", userData);
+            // console.log("✅ Authenticated user:", userData);
             setUser(userData); // ✅ Store user
         } catch (error) {
             console.error("❌ Error fetching user:", error);
@@ -121,12 +121,23 @@ export const ProjectProvider = ({children}) => {
         }
       };
 
-    useEffect(() =>{
-        fetchUser().then(() => {
-            fetchLeaders();
+    // useEffect(() =>{
+    //     fetchUser().then(() => {
+    //         fetchLeaders();
+    //         fetchProjects();
+    //     });
+    // }, []);
+    useEffect(() => {
+        const fetchData = async () => {
+            fetchLeaders(); 
             fetchProjects();
-        });
+            await fetchUser(); // Ensure user is fetched first
+             
+        };
+    
+        fetchData();
     }, []);
+    
 
     return( // loading update
         <ProjectContext.Provider value={{user, setUser, leaders, loadingLeaders, projects, fetchProjects, createProject, updateProject}}> 

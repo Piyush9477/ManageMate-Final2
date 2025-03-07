@@ -7,6 +7,7 @@ export const AuthProvider = ({children}) => {
   const authAPI = "http://localhost:5001/auth";
 
   const [user, setUser] = useState(null);
+  const [allUser, setAllUser] = useState(null);
   const [profile, setProfile] = useState(null);
   const [users, setUsers] = useState([]);
   const navigate = useNavigate();
@@ -26,7 +27,10 @@ export const AuthProvider = ({children}) => {
       const response = await fetch("http://localhost:5001/auth/users", {
         method: "GET",
         credentials: "include",
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {
+          "Content-Type": "application/json", 
+          Authorization: `Bearer ${token}` 
+        },
       });
 
       if (!response.ok) {
@@ -39,6 +43,26 @@ export const AuthProvider = ({children}) => {
       console.error("Error fetching users:", error);
     }
   };
+
+  const fetchAllUsers = async () => {
+    try{
+      const response = await fetch(`${authAPI}/allUsers`,{
+        method: "GET",
+        credentials: "include",
+        headers: {"Content-Type": "application/json"}
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch all users: ${response.status} ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      setAllUser(data);
+    }
+    catch (error) {
+      console.error("Error fetching all users:", error);
+    }
+  }
 
   const login = async (email, password) => {
     try{
@@ -141,11 +165,47 @@ export const AuthProvider = ({children}) => {
     }
   }
 
+  const updateProfile = async (updatedFields) => {
+    try{
+      const response = await fetch(`${authAPI}/profile/edit`,{
+        method: "PUT",
+        credentials: "include",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(updatedFields)
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to update profile");
+      }
+      
+      // If name is updated, reflect changes in localStorage and state
+      if (data.user.name) {
+        const updatedUser = { ...user, name: data.user.name };
+        localStorage.setItem("user", JSON.stringify(updatedUser));
+        setUser(updatedUser);
+      }
+
+      // Update profile state
+      setProfile((prevProfile) => ({
+        ...prevProfile,
+        name: data.user.name || prevProfile.name,
+      }));
+
+      return { success: true, message: "Profile updated successfully" };
+    }
+    catch (error) {
+      console.error("Profile update error:", error);
+      return { success: false, message: error.message };
+    }
+  }
+
   return(
-    <AuthContext.Provider value={{user, profile, setProfile, users, register, login, logout, fetchProfile}}>
+    <AuthContext.Provider value={{user, allUser, profile, setProfile, users, register, login, logout, fetchProfile, updateProfile, fetchAllUsers}}>
       {children}
     </AuthContext.Provider>
   );
 }
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => useContext(AuthContext); 

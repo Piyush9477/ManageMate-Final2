@@ -75,6 +75,32 @@ const getProfile = async (req, res) => {
     }
 }
 
+const editProfile = async (req, res) => {
+    try {
+        const { name, password } = req.body;
+        const user = await User.findById(req.user.id);
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        if (name) {
+            user.name = name;
+        }
+
+        if (password) {
+            const hashedPassword = await bcrypt.hash(password, 10);
+            user.password = hashedPassword;
+        }
+
+        await user.save();
+
+        res.json({ message: "Profile updated successfully", user: { name: user.name, email: user.email, role: user.role } });
+    } catch (err) {
+        res.status(500).json({ message: "Server Error", err });
+    }
+};
+
 const logout = (req, res) => {
     res.clearCookie("token");
     res.json({message: "Logged out successfully"});
@@ -94,4 +120,4 @@ const getAllUsers = async (req, res) => {
     }
 }
 
-module.exports = {register, login, getProfile, logout, getAllUsers};
+module.exports = {register, login, getProfile, editProfile, logout, getAllUsers};

@@ -57,7 +57,8 @@ export const ProjectProvider = ({children}) => {
         try{
             const response = await fetch(`${projectAPI}/`,{
                 method: "GET",
-                credentials: "include"
+                credentials: "include",
+                headers: {"Content-Type": "application/json"}
             });
 
             if (!response.ok) {

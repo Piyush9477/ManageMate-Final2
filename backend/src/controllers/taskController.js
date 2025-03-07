@@ -98,4 +98,34 @@ const getTeamMembers = async (req, res) => {
     }
 }
 
+const editTask = async (req, res) => {
+    try {
+        if (req.user.role !== "Project Leader") {
+            return res.status(401).json({ message: "Access Denied" });
+        }
+
+        const { taskId } = req.params; // Task ID from URL params
+        const { title, description, assignedTo, deadline, status } = req.body;
+
+        const task = await Task.findById(taskId);
+        if (!task) {
+            return res.status(404).json({ message: "Task not found" });
+        }
+
+        // Update fields only if provided in the request body
+        if (title) task.title = title;
+        if (description) task.description = description;
+        if (assignedTo) task.assignedTo = assignedTo;
+        if (deadline) task.deadline = deadline;
+        if (status) task.status = status;
+
+        await task.save();
+
+        res.status(200).json({ message: "Task updated successfully", task });
+    } catch (err) {
+        res.status(500).json({ message: "Server Error", err });
+    }
+};
+
+
 module.exports = {createTask, getTasks, getAllTasks, getTeamMembers, getProjectName};

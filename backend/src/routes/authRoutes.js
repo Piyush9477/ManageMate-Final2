@@ -1,5 +1,5 @@
 const express = require("express");
-const {register, login, getProfile, logout, getAllUsers} = require("../controllers/authController");
+const {register, login, getProfile, editProfile, logout, getAllUsers} = require("../controllers/authController");
 const {authMiddleware} = require("../middlewares/authMiddleware");
 const router = express.Router();
 const User = require("../models/User")
@@ -8,6 +8,7 @@ router.post("/register", register);
 router.post("/login", login);
 router.post("/logout", logout);
 router.get("/profile", authMiddleware, getProfile);
+router.put("/profile/edit", authMiddleware, editProfile);
 router.get("/allUsers", authMiddleware, getAllUsers);
 
 // Fetch logged-in user details

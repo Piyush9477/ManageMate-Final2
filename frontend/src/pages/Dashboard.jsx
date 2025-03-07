@@ -43,7 +43,7 @@ const Dashboard = () => {
   const roleBasedStats = {
     Manager: [
       { label: "Total Projects", value: stats.totalProjects, icon: <Briefcase size={28} />, link: "/projects" },
-      // { label: "Total Tasks", value: stats.totalTasks, icon: <ClipboardList size={28} />, link: "/tasks" },
+      { label: "Total Tasks", value: stats.totalTasks, icon: <ClipboardList size={28} />, link: "/tasks" },
     ],
     "Project Leader": [
       { label: "Assigned Projects", value: stats.assignedProjects, icon: <Briefcase size={28} />, link: "/projects" },

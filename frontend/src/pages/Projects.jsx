@@ -5,9 +5,20 @@ const Projects = ({ projects }) => {
     <div className="p-8 ml-64 text-white">
       <h1 className="text-3xl font-bold mb-4">Projects</h1>
 
-      <Link to="/add-project" className="bg-green-500 px-4 py-2 rounded hover:bg-green-700 mb-4 inline-block">
+      {/* <Link to="/add-project" className="bg-green-500 px-4 py-2 rounded hover:bg-green-700 mb-4 inline-block">
         + Add Project
-      </Link>
+      </Link> */}
+
+      {/* Button to Open Add Project Modal */}
+      <button
+        onClick={() => setModalOpen(true)}
+        className="bg-green-500 px-4 py-2 rounded hover:bg-green-700 mb-4 inline-block"
+      >
+        + Add Project
+      </button>
+
+      {/* Add Project Modal */}
+      <AddProjectModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
 
       {projects.length === 0 ? (
         <p className="text-gray-400">No projects added yet.</p>

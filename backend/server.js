@@ -12,6 +12,7 @@ const projectRoutes = require("./src/routes/projectRoutes");
 const taskRoutes = require("./src/routes/taskRoutes");
 const messageRoutes = require("./src/routes/messageRoutes");
 const Message = require("./src/models/Message");
+const dashboardRoutes = require("./src/routes/dashboard");
 
 const app = express();
 const server = http.createServer(app);
@@ -31,6 +32,7 @@ app.use("/project", projectRoutes);
 app.use("/tasks", taskRoutes);
 app.use("/messages", messageRoutes);
 app.use("/uploads", express.static("uploads"));
+app.use("/dashboard", dashboardRoutes);
 
 const activeUsers = new Map();
 

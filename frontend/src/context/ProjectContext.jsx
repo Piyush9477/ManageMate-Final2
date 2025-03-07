@@ -120,13 +120,7 @@ export const ProjectProvider = ({children}) => {
           return false;
         }
       };
-
-    // useEffect(() =>{
-    //     fetchUser().then(() => {
-    //         fetchLeaders();
-    //         fetchProjects();
-    //     });
-    // }, []);
+      
     useEffect(() => {
         const fetchData = async () => {
             fetchLeaders(); 

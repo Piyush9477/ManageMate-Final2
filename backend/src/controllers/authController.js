@@ -80,4 +80,18 @@ const logout = (req, res) => {
     res.json({message: "Logged out successfully"});
 }
 
-module.exports = {register, login, getProfile, logout};
+const getAllUsers = async (req, res) => {
+    try{
+        if (req.user.role !== "Manager") {
+            return res.status(401).json({ message: "Access Denied. Only accessible to Managers" });
+        }
+
+        const users = await User.find({ _id: { $ne: req.user._id } });
+        res.status(201).json(users);
+    }
+    catch (err) {
+        res.status(500).json({ message: "Server Error", err });
+    }
+}
+
+module.exports = {register, login, getProfile, logout, getAllUsers};
